@@ -5,6 +5,6 @@ const getRoomsById = async (_id: string): Promise<AxiosResponse> => {
   return http.get(`/rooms?roomIds=${_id}`);
 };
 
-export const Room = {
+export const Room = { 
   getRoomsById,
 };
