@@ -1,7 +1,7 @@
 import type { FC } from "react";
-import { useState, useEffect } from "react";
-
-import Background from "../assets/images/hotelroom.jpg";
+import type { RootState } from "../app/store";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import { Box, Divider, Tabs, Tab, Chip, Typography } from "@mui/material";
 
@@ -11,27 +11,18 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import EditLocationAltIcon from "@mui/icons-material/EditLocationAlt";
 
 import { blue } from "@mui/material/colors";
-
-import { Room } from "../services/room.service";
+import { fetchRoomsById } from "../store/roomSlice";
 
 export const RoomManage: FC = () => {
-  const [roomData, setRoomData] = useState<any>([]);
-  const [fetching, setFetching] = useState(true);
-
-  const fetchRooms = async (): Promise<void> => {
-    const response = await Room.getRoomsById(
-      "ceae0d77-2fd6-dbe3-0f33-61c355c106ff"
-    );
-    setRoomData(response.data.roomInfo[0]);
-    setFetching(false);
-    console.log(response.data.roomInfo[0]);
-  };
+  const roomData = useSelector((state: RootState) => state.rooms.rooms);
+  const fetching = useSelector((state: RootState) => state.rooms.fetching);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchRooms();
+    dispatch(fetchRoomsById("ceae0d77-2fd6-dbe3-0f33-61c355c106ff"));
   }, []);
 
-  return !fetching ? (
+  return fetching === "fullfiled" ? (
     <>
       <Tabs
         textColor="secondary"
@@ -91,7 +82,7 @@ export const RoomManage: FC = () => {
       </Typography>
     </>
   ) : (
-    <></>
+    <>Loading Rooms</>
   );
 };
 
